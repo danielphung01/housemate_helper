@@ -8,19 +8,6 @@ class EventsMenu extends StatefulWidget {
 }
 
 class _EventsMenuState extends State<EventsMenu> {
-
-  int _currentIndex = 0;
-  final List<Widget> _children = [
-    EventsMenu()
-  ];
-
-
-  void onTabTapped (String tabItem, int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,11 +15,6 @@ class _EventsMenuState extends State<EventsMenu> {
         title: Text('Events'),
         automaticallyImplyLeading: false
       ),
-
-      body: Column(
-
-      ),
-
     );
   }
 }
