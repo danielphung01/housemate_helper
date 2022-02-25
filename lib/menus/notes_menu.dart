@@ -12,6 +12,7 @@ class _NotesMenuState extends State<NotesMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          centerTitle: true,
           title: Text('Notes'),
           automaticallyImplyLeading: false
       ),

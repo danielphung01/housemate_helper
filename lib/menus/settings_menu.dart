@@ -12,6 +12,7 @@ class _SettingsMenuState extends State<SettingsMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          centerTitle: true,
           title: Text('Settings'),
           automaticallyImplyLeading: false
       ),

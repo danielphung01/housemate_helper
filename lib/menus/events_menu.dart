@@ -12,8 +12,22 @@ class _EventsMenuState extends State<EventsMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Events'),
         automaticallyImplyLeading: false
+      ),
+
+      body: Column(
+        children: [
+          Container(
+            child: RaisedButton(
+              child: Text('button'),
+              onPressed: () {
+                print("button Pressed");
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

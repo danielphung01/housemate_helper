@@ -12,6 +12,7 @@ class _ExpensesMenuState extends State<ExpensesMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          centerTitle: true,
           title: Text('Expenses'),
           automaticallyImplyLeading: false
       ),

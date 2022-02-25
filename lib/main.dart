@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:housemate_helper/home_page.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
 import 'login_page.dart';
 
@@ -13,43 +14,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      // theme: appThemeData(),
       title: "Housemate Helper",
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          // backgroundColor: Color(0xFF1C2C54),
+          // foregroundColor: Color(0xFF48C385)
+        ),
+      ),
       initialRoute: '/',
       routes: {
-        '/':  (context) => LoginPage(),
+        '/':  (context) => MyHomePage(title: 'Housemate Helper'),
         '/join_create_group_page': (context) => JoinCreateGroupPage(),
       },
     );
   }
 }
+
