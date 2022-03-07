@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:housemate_helper/menus/events_menu.dart';
+import 'package:housemate_helper/bottomnavbar_page.dart';
 import 'package:housemate_helper/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                           // TODO: check if account is tied to room, if no, go to join_create_group_page
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => EventsMenu()),
+                            MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
                           );
                           /*
                         FirebaseAuth.instance.signInWithEmailAndPassword(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/home_page.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
-import 'login_page.dart';
 
 void main() {
   runApp(const MyApp());

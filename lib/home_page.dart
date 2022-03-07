@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:housemate_helper/bottomnavbar_page.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
 import 'login_page.dart';
 
@@ -20,12 +21,22 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Container(
             child: RaisedButton(
-              child: Text('button'),
+              child: Text('login screen'),
               onPressed: () {
-                print("button Pressed");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+            ),
+          ),
+          Container(
+            child: RaisedButton(
+              child: Text('bottommnav screen'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
                 );
               },
             ),
