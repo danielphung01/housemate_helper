@@ -10,23 +10,50 @@ class NotesMenu extends StatefulWidget {
 }
 
 class _NotesMenuState extends State<NotesMenu> {
+
+  List<String> notes = <String>['Note A\nqwerqwerqwerqwerqwerqwerqwerqwerqwerqwer\nqwer\nqwer\nqwer\nqwer', 'Note B', 'Note C', 'Note D', 'Note E'];
+  List<bool> checked = [false, false, false, false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            child: RaisedButton(
-              child: Text('temp button'),
-              onPressed: () {
-                print("button Pressed");
-                // TEMP BUTTON
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ShoppingListMenu()),
-                );
-              },
-            ),
+          Expanded(
+              child: ListView.builder(
+                  //padding: const EdgeInsets.only(top: 10),
+                  itemCount: notes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.only(top: 8, right: 13, left: 13),
+                      title: Container(
+                        color: Color.fromARGB(100, 230, 220, 130),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Checkbox(
+                                value: checked[index],
+                                onChanged: (bool? value) {
+                                  checked[index] = !checked[index];
+                                  setState(() {
+                                    checked[index] = value!;
+                                  });
+                                  print(checked.toString());
+                                },
+                            ),
+                            Flexible(
+                              child: Container(
+                                  padding: EdgeInsets.only(top: 10, bottom: 10, right: 10),
+                                  child: Text(notes[index])
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+              )
           ),
         ],
       ),

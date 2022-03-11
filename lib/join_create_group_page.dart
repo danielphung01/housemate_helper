@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:housemate_helper/bottomnavbar_page.dart';
 
 class JoinCreateGroupPage extends StatefulWidget {
   const JoinCreateGroupPage({Key? key}) : super(key: key);
@@ -60,17 +61,27 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                   flex: 15,
                   child: Container(
                     margin: EdgeInsets.only(right: 15),
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: BorderSide(color: Colors.grey),
+                    child: ElevatedButton(
+                      child: null,
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.teal),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          )
+                        ),
                       ),
-                      onPressed: () {
-                        print("invite code used");
-                        // TODO: check if group exists
+                        onPressed: () {
+                          print("invite code used");
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                                (Route<dynamic> route) => false,
+                          );
+                          // TODO: check if group exists
 
-                        // TODO: join group with code
-                      },
+                          // TODO: join group with code
+                        }
                     ),
                   ),
                 ),
@@ -115,15 +126,27 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                   flex: 15,
                   child: Container(
                     margin: EdgeInsets.only(right: 15),
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: BorderSide(color: Colors.grey),
-                      ),
-                      onPressed: () {
-                        print("created new room");
-                        // TODO: create new room
-                      },
+                    child: ElevatedButton(
+                        child: null,
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.teal),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )
+                          ),
+                        ),
+                        onPressed: () {
+                          print("created new room pressed");
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                                (Route<dynamic> route) => false,
+                          );
+                          // TODO: create new group
+
+                          // TODO: join group with code
+                        }
                     ),
                   ),
                 ),

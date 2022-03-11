@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:housemate_helper/login_page.dart';
 
 class SettingsMenu extends StatefulWidget {
   const SettingsMenu({Key? key}) : super(key: key);
@@ -29,8 +31,8 @@ class _SettingsMenuState extends State<SettingsMenu> {
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 20.0),
-                    child: Text(
-                      "NAME",
+                    child: const Text(
+                      "<NAME>",
                       style: TextStyle(
                         fontSize: 25,
                       ),
@@ -40,76 +42,118 @@ class _SettingsMenuState extends State<SettingsMenu> {
               ),
             ),
           ),
-          Divider( color: Colors.black ),
+          const Divider( color: Colors.black ),
           Expanded(
             flex: 7,
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                  "Group Name: ",
-                  style: TextStyle(
-                    fontSize: 18,
+            child: Row(
+              children: [
+                Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 20.0),
+                child: const Text(
+                    "Group Name: ",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
-              ),
+                ),
+                const Text(
+                  "<name>",
+                  style: TextStyle(
+                    fontSize: 17,
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
             flex: 7,
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                  "Invite Code: ",
-                  style: TextStyle(
-                    fontSize: 18,
+            child: Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 20.0),
+                  child: const Text(
+                    "Invite Code: ",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
-              ),
+                ),
+                const Text(
+                  "<code>",
+                  style: TextStyle(
+                    fontSize: 17,
+                  ),
+                ),
+              ],
             ),
           ),
-          Divider( color: Colors.black ),
+          const Divider( color: Colors.black ),
           Expanded(
             flex: 8,
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.only(left: 20.0),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: const Text(
                   "Edit Profile",
                   style: TextStyle(
                     fontSize: 15,
                   ),
+                ),
               ),
+              onTap: () {
+                print("edit profile button pressed");
+              },
             ),
           ),
-          Divider( color: Colors.black ),
           Expanded(
             flex: 8,
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.only(left: 20.0),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: const Text(
                   "Group Settings",
                   style: TextStyle(
                     fontSize: 15,
                   ),
+                ),
               ),
+              onTap: () {
+                print("group settings button pressed");
+              },
             ),
           ),
-          Divider( color: Colors.black ),
           Expanded(
             flex: 8,
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                  "Log out",
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.only(left: 20.0),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: const Text(
+                  "Log Out",
                   style: TextStyle(
                     fontSize: 15,
                   ),
+                ),
               ),
+              onTap: () async {
+                print("log out button pressed");
+                // TODO: log out of account
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) => false,
+                );
+              },
             ),
           ),
-          Divider( color: Colors.black ),
           // SPACE
           Expanded(
             flex: 51,

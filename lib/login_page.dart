@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:housemate_helper/bottomnavbar_page.dart';
+import 'package:housemate_helper/join_create_group_page.dart';
 import 'package:housemate_helper/signup_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -58,13 +60,26 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Container(
-                      // TODO: make clickable
                       margin: EdgeInsets.only(top: 10, bottom: 10),
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Forgot Password?',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // TODO: implement forgot password
+                              FirebaseAuth.instance.authStateChanges()
+                                  .listen((User? user) {
+                                if (user == null) {
+                                  print("user is currently signed out");
+                                } else {
+                                  print("user is signed in");
+                                }
+                              });
+                            }
                         ),
                       ),
                     ),
@@ -72,36 +87,46 @@ class _LoginPageState extends State<LoginPage> {
                       margin: EdgeInsets.only(top: 10),
                       height: 50,
                       width: 200,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.grey),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              )
+                          ),
+                          side: MaterialStateProperty.all(
+                            BorderSide(
+                              style: BorderStyle.solid,
+                              color: Colors.grey,
+                            )
+                          ),
                         ),
                         child: Text('Login'),
                         onPressed: () {
-                          print("Login Pressed");
                           // TODO: login through Firebase
-
-                          // TODO: check if account is tied to room, if no, go to join_create_group_page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
-                          );
-                          /*
-                        FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: emailController.text, password: passwordController.text)
-                            .then((value) {
-                          print("Login successful");
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ListViewDemoPage()),
-                          );
-
-                        }).catchError((error) {
-                          print("Login failed");
-                          print(error.toString());
-                        });
-                        */
+                          FirebaseAuth.instance.signInWithEmailAndPassword(
+                              email: emailController.text, password: passwordController.text)
+                              .then((value) {
+                                print("Sucessfully logged in");
+                                // TODO: check if account is tied to room, if not, go to join_create_group_page
+                                if (true) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                                        (Route<dynamic> route) => false,
+                                  );
+                                } else {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                                        (Route<dynamic> route) => false,
+                                  );
+                                }
+                              }).catchError((error) {
+                                print("Failed to log in");
+                                print(error.toString());
+                              });
                         },
                       ),
                     ),

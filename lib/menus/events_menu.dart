@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/menus/notes_menu.dart';
 import 'package:housemate_helper/menus/settings_menu.dart';
@@ -21,10 +22,14 @@ class _EventsMenuState extends State<EventsMenu> {
               onPressed: () {
                 print("button Pressed");
                 // TEMP BUTTON
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NotesMenu()),
-                );
+                FirebaseAuth.instance.authStateChanges()
+                  .listen((User? user) {
+                    if (user == null) {
+                      print("user is currently signed out");
+                    } else {
+                      print("user is signed in");
+                    }
+                  });
               },
             ),
           ),

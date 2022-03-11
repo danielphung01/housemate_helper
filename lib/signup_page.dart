@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class _SignupPageState extends State<SignupPage> {
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  var confirmPasswordController = TextEditingController();
   bool passwordErrorMessageVisibility = false;
 
   @override
@@ -60,7 +62,7 @@ class _SignupPageState extends State<SignupPage> {
                     Container(
                       margin: EdgeInsets.only(left: 35, right: 35, bottom: 10, top: 10),
                       child: TextField(
-                        controller: passwordController,
+                        controller: confirmPasswordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -81,23 +83,50 @@ class _SignupPageState extends State<SignupPage> {
                       margin: EdgeInsets.only(top: 10),
                       height: 50,
                       width: 200,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.grey),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.blueGrey),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              )
+                          ),
+                          side: MaterialStateProperty.all(
+                              BorderSide(
+                                style: BorderStyle.solid,
+                                color: Colors.grey,
+                              )
+                          ),
                         ),
                         child: Text('Create Account'),
                         onPressed: () {
-                          print("Create Account Pressed");
-                          // TODO: password check logic
-
-                          // TODO: create account through Firebase
-
-                          Navigator.popAndPushNamed(context, '/join_create_group_page');
-                          /*Navigator.push(
+                          if (passwordController.text == confirmPasswordController.text) { // Check if password and confirmPassword are the same
+                            FirebaseAuth.instance.createUserWithEmailAndPassword( // Create account through FirebaseAuth
+                                email: emailController.text, password: passwordController.text)
+                                .then((value) {
+                                  print("Successfully signed up");
+                                  print(value.user!.uid);
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                                        (Route<dynamic> route) => false,
+                                  );
+                                }).catchError((error) {
+                                  print("Failed to sign up");
+                                  print(error.toString());
+                                  // TODO:
+                                });
+                          } else {
+                            print("passwords are not the same");
+                            // TODO: show "passwords must be matching prompt"
+                          }
+                          /*
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
-                          );*/
+                                (Route<dynamic> route) => false,
+                          );
+                          */
                           /*
                         FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: emailController.text, password: passwordController.text)

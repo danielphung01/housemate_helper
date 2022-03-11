@@ -17,6 +17,7 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
 
   int _selectedIndex = 0;
   String appBarTitleText = 'Events';
+  bool deleteButtonVisible = false;
 
   static final List<Widget> _widgetOptions = <Widget>[
     EventsMenu(),
@@ -38,8 +39,15 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
     setState(() {
       _selectedIndex = index;
       appBarTitleText = _pageTitles[index];
+
+      if (index == 1 || index == 2) {
+        deleteButtonVisible = true;
+      } else {
+        deleteButtonVisible = false;
+      }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +56,20 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
         title: Text(appBarTitleText),
         automaticallyImplyLeading: false,
         actions: [
+          Visibility(
+            visible: deleteButtonVisible,
+            child: Container(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  print('delete');
+                },
+                child: Icon (
+                  Icons.delete,
+                ),
+              ),
+            ),
+          ),
           Container(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
@@ -70,6 +92,7 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
+        unselectedItemColor: Colors.grey,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_view_month),
@@ -93,7 +116,7 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.red,
         onTap: _onItemTapped,
       ),
     );
