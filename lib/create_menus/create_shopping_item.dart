@@ -16,6 +16,7 @@ class _CreateShoppingItemState extends State<CreateShoppingItem> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.pageTitle),
+        centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
           Visibility(

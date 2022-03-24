@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/login_page.dart';
+import 'package:housemate_helper/setting_pages/make_annoucement_page.dart';
 
 class SettingsMenu extends StatefulWidget {
   const SettingsMenu({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class _SettingsMenuState extends State<SettingsMenu> {
     return Scaffold(
       appBar: AppBar(
           title: Text('Settings'),
+        automaticallyImplyLeading: true,
       ),
 
       body: Column(
@@ -106,6 +108,10 @@ class _SettingsMenuState extends State<SettingsMenu> {
               ),
               onTap: () {
                 print("make announcement button pressed");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MakeAnnouncementPage()),
+                );
               },
             ),
           ),

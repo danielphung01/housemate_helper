@@ -16,6 +16,7 @@ class _CreateExpenseState extends State<CreateExpense> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Create Expense'),
+        centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
           Visibility(

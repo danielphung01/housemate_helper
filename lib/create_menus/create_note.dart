@@ -18,6 +18,7 @@ class _CreateNoteState extends State<CreateNote> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.pageTitle),
+        centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
           Visibility(

@@ -16,6 +16,7 @@ class _CreateEventState extends State<CreateEvent> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.pageTitle),
+        centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
           Visibility(
