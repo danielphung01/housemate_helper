@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/login_page.dart';
+import 'package:housemate_helper/setting_pages/edit_group_settings_page.dart';
+import 'package:housemate_helper/setting_pages/edit_profile_page.dart';
 import 'package:housemate_helper/setting_pages/make_annoucement_page.dart';
 
 class SettingsMenu extends StatefulWidget {
@@ -107,7 +109,6 @@ class _SettingsMenuState extends State<SettingsMenu> {
                 ),
               ),
               onTap: () {
-                print("make announcement button pressed");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MakeAnnouncementPage()),
@@ -130,7 +131,10 @@ class _SettingsMenuState extends State<SettingsMenu> {
                 ),
               ),
               onTap: () {
-                print("edit profile button pressed");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditProfilePage()),
+                );
               },
             ),
           ),
@@ -142,14 +146,17 @@ class _SettingsMenuState extends State<SettingsMenu> {
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
                 child: const Text(
-                  "Group Settings",
+                  "Edit Group Settings",
                   style: TextStyle(
                     fontSize: 15,
                   ),
                 ),
               ),
               onTap: () {
-                print("group settings button pressed");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditGroupSettingsPage()),
+                );
               },
             ),
           ),

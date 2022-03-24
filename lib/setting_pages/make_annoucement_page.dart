@@ -18,6 +18,7 @@ class _MakeAnnouncementPageState extends State<MakeAnnouncementPage> {
       appBar: AppBar(
         title: Text('Make an Announcement'),
         automaticallyImplyLeading: true,
+        centerTitle: true,
       ),
 
       body: Column(

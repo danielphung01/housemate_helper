@@ -22,7 +22,6 @@ class _NotesMenuState extends State<NotesMenu> {
         children: [
           Expanded(
               child: ListView.builder(
-                  //padding: const EdgeInsets.only(top: 10),
                   itemCount: notes.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
