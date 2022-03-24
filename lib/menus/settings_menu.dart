@@ -98,6 +98,25 @@ class _SettingsMenuState extends State<SettingsMenu> {
                 alignment: Alignment.centerLeft,
                 width: double.infinity,
                 child: const Text(
+                  "Make Announcement",
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              onTap: () {
+                print("make announcement button pressed");
+              },
+            ),
+          ),
+          Expanded(
+            flex: 8,
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.only(left: 20.0),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: const Text(
                   "Edit Profile",
                   style: TextStyle(
                     fontSize: 15,

@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: Text('Login'),
                         onPressed: () {
-                          // TODO: login through Firebase
+                          // login through Firebase
                           FirebaseAuth.instance.signInWithEmailAndPassword(
                               email: emailController.text, password: passwordController.text)
                               .then((value) {

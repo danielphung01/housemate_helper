@@ -15,6 +15,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
 
   var emailController = TextEditingController();
+  var usernameController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
   bool passwordErrorMessageVisibility = false;
@@ -28,15 +29,26 @@ class _SignupPageState extends State<SignupPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              flex: 30,
+              flex: 25,
               child: Image(
                 image: NetworkImage("https://4m4you.com/wp-content/uploads/2020/06/logo-placeholder.png"),
               ),
             ),
             Expanded(
-                flex: 50,
+                flex: 65,
                 child: Column(
                   children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 35, right: 35, bottom: 10, top: 10),
+                      child: TextField(
+                        controller: usernameController,
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Username',
+                        ),
+                      ),
+                    ),
                     Container(
                       margin: EdgeInsets.only(left: 35, right: 35, bottom: 10, top: 10),
                       child: TextField(
