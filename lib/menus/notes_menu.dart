@@ -12,8 +12,21 @@ class NotesMenu extends StatefulWidget {
 
 class _NotesMenuState extends State<NotesMenu> {
 
-  List<String> notes = <String>['Note A\nqwerqwerqwerqwerqwerqwerqwerqwerqwerqwer\nqwer\nqwer\nqwer\nqwer', 'Note B', 'Note C', 'Note D', 'Note E'];
+  List<String> titles = <String>["Note A", "Note B", "Note C", "Note D", "Note E"];
+  List<String> notes = <String>['qwerqwerqwerqwerqwerqwerqwerqwerqwerqwer\nqwer\nqwer\nqwer\nqwer\nqwer\nqwer', 'qwer', '', 'qwer', 'contents\ncontents'];
   List<bool> checked = [false, false, false, false, false];
+
+  void SelectedItem(BuildContext context, selection) {
+    if (selection == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Edit Note', isExistingItem: true))),
+      );
+    } else if (selection == 1) {
+      // TODO: delete item from database logic here
+      print('delete');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +55,55 @@ class _NotesMenuState extends State<NotesMenu> {
                                   print(checked.toString());
                                 },
                             ),
-                            Flexible(
+                            Expanded(
                               child: Container(
-                                  padding: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-                                  child: Text(notes[index])
+                                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        titles[index],
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Text(
+                                        notes[index],
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  )
                               ),
+                            ),
+                            PopupMenuButton<int>(
+                              icon: Icon(Icons.menu),
+                              color: Colors.white,
+                              itemBuilder: (context) => [
+                                PopupMenuItem<int>(
+                                  value: 0,
+                                  child: Text(
+                                    "Edit",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                PopupMenuItem<int>(
+                                  value: 1,
+                                  child: Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              onSelected: (selection) => {
+                                SelectedItem(context, selection)
+                              },
                             ),
                           ],
                         ),
@@ -59,19 +116,11 @@ class _NotesMenuState extends State<NotesMenu> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: check if the user is trying to create a new item or delete/edit an existing one
-          // TODO: pass true or false into isExistingItem accordingly to show/hide delete icon
-          if (true) { // deleting/editing an existing item
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Edit Note', isExistingItem: true))),
-            );
-          } else { // creating a new item
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Create Note', isExistingItem: false))),
-            );
-          }
+          // creating a new item
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Create Note', isExistingItem: false))),
+          );
         },
         backgroundColor: Colors.lightBlue,
         child: const Icon(Icons.add),

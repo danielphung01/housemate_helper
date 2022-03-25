@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/login_page.dart';
 import 'package:housemate_helper/setting_pages/edit_group_settings_page.dart';
@@ -13,6 +16,26 @@ class SettingsMenu extends StatefulWidget {
 }
 
 class _SettingsMenuState extends State<SettingsMenu> {
+
+  var groupName = TextEditingController();
+  var inviteCode = TextEditingController();
+  // TODO: get groupID of group that the user that is logged in belongs to rather than hardcoding it
+  String groupID = "group0001";
+
+  _SettingsMenuState() {
+    FirebaseDatabase.instance.ref().child("groups/" + groupID).once()
+        .then((databaseEvent) {
+          print("Successfully loaded data");
+          setState(() {
+            groupName.text = databaseEvent.snapshot.child("name").value.toString();
+            inviteCode.text = databaseEvent.snapshot.child("code").value.toString();
+          });
+        }).catchError((error) {
+          print("Failed to load data");
+          print(error);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,8 +84,8 @@ class _SettingsMenuState extends State<SettingsMenu> {
                     ),
                   ),
                 ),
-                const Text(
-                  "<name>",
+                Text(
+                  groupName.text,
                   style: TextStyle(
                     fontSize: 17,
                   ),
@@ -84,8 +107,8 @@ class _SettingsMenuState extends State<SettingsMenu> {
                     ),
                   ),
                 ),
-                const Text(
-                  "<code>",
+                Text(
+                  inviteCode.text,
                   style: TextStyle(
                     fontSize: 17,
                   ),
