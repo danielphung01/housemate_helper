@@ -2,6 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import '../menus/settings_menu.dart';
+
 class EditGroupSettingsPage extends StatefulWidget {
   const EditGroupSettingsPage({Key? key}) : super(key: key);
 
@@ -11,22 +13,23 @@ class EditGroupSettingsPage extends StatefulWidget {
 
 class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
 
-  var usernameController = TextEditingController();
+  var groupNameController = TextEditingController();
   // TODO: get groupID of group that the user that is logged in belongs to rather than hardcoding it
   String groupID = "group0001";
 
   _EditGroupSettingsPageState() {
-    FirebaseDatabase.instance.ref().child("groups/" + groupID + "/name").once()
+    FirebaseDatabase.instance.ref().child("groups/$groupID/name").once()
       .then((databaseEvent) {
         print("Successfully loaded data");
         print("Key: " + databaseEvent.snapshot.key.toString());
         print("Value: " + databaseEvent.snapshot.value.toString());
-        usernameController.text = databaseEvent.snapshot.value.toString();
+        groupNameController.text = databaseEvent.snapshot.value.toString();
       }).catchError((error) {
         print("Failed to load data");
         print(error);
       });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +59,7 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
                 Expanded(
                   flex: 95,
                   child: TextField(
-                    controller: usernameController,
+                    controller: groupNameController,
                     obscureText: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
@@ -81,11 +84,18 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
                     ),
                   ),
                   onPressed: () {
-                    FirebaseDatabase.instance.ref().child("groups/" + groupID + "/name").set(usernameController.text)
+                    FirebaseDatabase.instance.ref().child("groups/" + groupID + "/name").set(groupNameController.text)
                       .then((value) {
-                        print("Successfully added.");
+                        print("Successfully changed group name.");
+                        Navigator.of(context).pop();
+                        // TODO: maybe switch this temporary solution to onUpdate to update the settings page
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SettingsMenu()),
+                        );
                       }).catchError((error) {
-                        print("Failed to add. " + error.toString());
+                        print("Failed to change group name. " + error.toString());
                       });
                   }
                 ),

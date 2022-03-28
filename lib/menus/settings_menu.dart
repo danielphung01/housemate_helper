@@ -17,23 +17,42 @@ class SettingsMenu extends StatefulWidget {
 
 class _SettingsMenuState extends State<SettingsMenu> {
 
+  var username = TextEditingController();
   var groupName = TextEditingController();
   var inviteCode = TextEditingController();
   // TODO: get groupID of group that the user that is logged in belongs to rather than hardcoding it
-  String groupID = "group0001";
 
   _SettingsMenuState() {
-    FirebaseDatabase.instance.ref().child("groups/" + groupID).once()
-        .then((databaseEvent) {
-          print("Successfully loaded data");
+    fillData();
+  }
+
+  void fillData() {
+    // Get user data
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
+    FirebaseDatabase.instance.ref().child("users/" + uid!).once()
+      .then((databaseEvent) {
+        print("Successfully loaded user data");
+        username.text = databaseEvent.snapshot.child("username").value.toString();
+
+        // Get group data
+        String groupID = databaseEvent.snapshot.child("groupID").value.toString();
+        FirebaseDatabase.instance.ref().child('groups/$groupID').once()
+            .then((databaseEvent) {
+          groupName.text = databaseEvent.snapshot.child("name").value.toString();
+          inviteCode.text = databaseEvent.snapshot.child("code").value.toString();
+          print("Successfully loaded group data");
+          print(databaseEvent.snapshot.toString());
           setState(() {
-            groupName.text = databaseEvent.snapshot.child("name").value.toString();
-            inviteCode.text = databaseEvent.snapshot.child("code").value.toString();
           });
         }).catchError((error) {
-          print("Failed to load data");
+          print("Failed to load group data");
           print(error);
         });
+      }).catchError((error) {
+        print("Failed to load user data");
+        print(error);
+      });
   }
 
   @override
@@ -58,8 +77,8 @@ class _SettingsMenuState extends State<SettingsMenu> {
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 20.0),
-                    child: const Text(
-                      "<NAME>",
+                    child: Text(
+                      username.text,
                       style: TextStyle(
                         fontSize: 25,
                       ),
@@ -199,7 +218,7 @@ class _SettingsMenuState extends State<SettingsMenu> {
               ),
               onTap: () async {
                 print("log out button pressed");
-                // TODO: log out of account
+                // Log out of account
                 await FirebaseAuth.instance.signOut();
                 Navigator.pushAndRemoveUntil(
                     context,

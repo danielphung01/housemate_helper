@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:housemate_helper/bottomnavbar_page.dart';
@@ -109,20 +110,32 @@ class _LoginPageState extends State<LoginPage> {
                               email: emailController.text, password: passwordController.text)
                               .then((value) {
                                 print("Sucessfully logged in");
-                                // TODO: check if account is tied to room, if not, go to join_create_group_page
-                                if (true) {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
-                                        (Route<dynamic> route) => false,
-                                  );
-                                } else {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
-                                        (Route<dynamic> route) => false,
-                                  );
-                                }
+                                // Check if account is tied to room, if not, go to join_create_group_page
+                                var uid = FirebaseAuth.instance.currentUser?.uid;
+                                FirebaseDatabase.instance.ref().child('users/$uid').once()
+                                    .then((databaseEvent) {
+                                  String groupID = databaseEvent.snapshot.child("groupID").value.toString();
+
+                                  if (groupID != "null") {
+                                    // The user is in a group
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                                          (Route<dynamic> route) => false,
+                                    );
+                                  } else {
+                                    // The user is not in a group
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                                          (Route<dynamic> route) => false,
+                                    );
+                                  }
+                                }).catchError((error) {
+                                  print("Failed to check user's current group");
+                                  print(error);
+                                });
+
                               }).catchError((error) {
                                 print("Failed to log in");
                                 print(error.toString());

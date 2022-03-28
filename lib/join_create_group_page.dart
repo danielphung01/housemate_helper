@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/bottomnavbar_page.dart';
+
+import 'login_page.dart';
 
 class JoinCreateGroupPage extends StatefulWidget {
   const JoinCreateGroupPage({Key? key}) : super(key: key);
@@ -154,10 +157,37 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
             ),
           ),
           Expanded(
-            flex: 60,
+            flex: 52,
             child: Text(
                 ''
               ),
+          ),
+          // TODO: FORMATTING
+          Expanded(
+            flex: 8,
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.only(left: 20.0),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: const Text(
+                  "Log Out",
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              onTap: () async {
+                print("log out button pressed");
+                // Log out of account
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                      (Route<dynamic> route) => false,
+                );
+              },
+            ),
           ),
         ],
       ),
