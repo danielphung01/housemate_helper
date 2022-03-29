@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:housemate_helper/join_create_group_page.dart';
 
 import '../menus/settings_menu.dart';
 
@@ -16,8 +18,12 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
   var groupNameController = TextEditingController();
   // TODO: get groupID of group that the user that is logged in belongs to rather than hardcoding it
   String groupID = "group0001";
+  dynamic user;
+  dynamic uid;
 
   _EditGroupSettingsPageState() {
+    user = FirebaseAuth.instance.currentUser;
+    uid = user?.uid;
     FirebaseDatabase.instance.ref().child("groups/$groupID/name").once()
       .then((databaseEvent) {
         print("Successfully loaded data");
@@ -84,7 +90,7 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
                     ),
                   ),
                   onPressed: () {
-                    FirebaseDatabase.instance.ref().child("groups/" + groupID + "/name").set(groupNameController.text)
+                    FirebaseDatabase.instance.ref().child("groups/$groupID/name").set(groupNameController.text)
                       .then((value) {
                         print("Successfully changed group name.");
                         Navigator.of(context).pop();
@@ -100,6 +106,38 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
                   }
                 ),
               ],
+            ),
+          ),
+          Container(
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.only(left: 20.0, bottom: 10, top: 10),
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                child: const Text(
+                  "Leave Group",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              onTap: () {
+                print("leave group button pressed");
+                // Leave group: set group to null and return to JoinCreateGroupPage
+
+                FirebaseDatabase.instance.ref().child("users/$uid/groupID").set("null")
+                  .then((value){
+                    print("successfully left group");
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                          (Route<dynamic> route) => false,
+                    );
+                  }).catchError((error) {
+                    print("failed to leave group");
+                  });
+              },
             ),
           ),
           const Divider( color: Colors.black ),
