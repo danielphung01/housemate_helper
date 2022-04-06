@@ -134,25 +134,21 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
                 // Leave group: set group to null and return to JoinCreateGroupPage
                 FirebaseDatabase.instance.ref().child("groups/$groupID/users/$randomID").remove()
                   .then((databaseEvent) {
-
                     // Set user groupID to null
                     FirebaseDatabase.instance.ref().child("users/$uid/groupID").set("null")
-                      .then((value){
-
-                      }).catchError((error) {
-                        print("failed to leave group");
-                      });
+                      .catchError((error) {
+                      print("failed to leave group");
+                    });
                     // Set user randomID to null
                     FirebaseDatabase.instance.ref().child("users/$uid/randomID").set("null")
-                      .then((value){
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
-                              (Route<dynamic> route) => false,
-                        );
-                      }).catchError((error) {
-                        print("failed to leave group");
-                      });
+                      .catchError((error) {
+                      print("failed to leave group");
+                    });
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                          (Route<dynamic> route) => false,
+                    );
                   }).catchError((error) {
                     print("failed to remove user from group");
                   });

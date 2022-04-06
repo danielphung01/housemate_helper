@@ -86,15 +86,6 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                         ),
                       ),
                         onPressed: () {
-                          print("invite code used");
-                          /*
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
-                                (Route<dynamic> route) => false,
-                          );
-                          */
-                          // TODO: check if group exists
                           FirebaseDatabase.instance.ref().child("groupCodes").once()
                             .then((databaseEvent) {
                               var groupID = databaseEvent.snapshot.child(inviteCode.text).value.toString();
@@ -106,34 +97,31 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                                 print("group exists, joining");
                                 // Set user's current group
                                 FirebaseDatabase.instance.ref().child("users/$uid/groupID").set(groupID)
-                                  .then((databaseEvent2) {
-                                    print(" Success");
-                                    // Add user to group list
-                                    Random random = Random(DateTime.now().millisecondsSinceEpoch);
-                                    var randomID = DateTime.now().millisecondsSinceEpoch.toString() + random.nextInt(9).toString();
-                                    FirebaseDatabase.instance.ref().child("groups/$groupID/users/$randomID").set(uid)
-                                        .catchError((error) {
-                                          print("Failed to add user to group list.");
-                                        });
-                                    // Set user's current group randomID
-                                    FirebaseDatabase.instance.ref().child("users/$uid/randomID").set(randomID)
-                                      .catchError((error) {
-                                        print("Failed set user randomID.");
-                                      });
-                                    // Continue to app
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
-                                          (Route<dynamic> route) => false,
-                                    );
-                                  }).catchError((error) {
+                                  .catchError((error) {
                                     print("Failed to change user's group");
                                   });
+                                // Add user to group list
+                                Random random = Random(DateTime.now().millisecondsSinceEpoch);
+                                var randomID = DateTime.now().millisecondsSinceEpoch.toString() + random.nextInt(9).toString();
+                                FirebaseDatabase.instance.ref().child("groups/$groupID/users/$randomID").set(uid)
+                                  .catchError((error) {
+                                  print("Failed to add user to group list.");
+                                });
+                                // Set user's current group randomID
+                                FirebaseDatabase.instance.ref().child("users/$uid/randomID").set(randomID)
+                                  .catchError((error) {
+                                  print("Failed set user randomID.");
+                                });
+                                // Continue to app
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                                      (Route<dynamic> route) => false,
+                                );
                               }
                             }).catchError((error) {
                               print(error);
                             });
-                          // TODO: join group with code
                         }
                     ),
                   ),
