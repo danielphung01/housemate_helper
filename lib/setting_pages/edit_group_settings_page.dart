@@ -16,24 +16,32 @@ class EditGroupSettingsPage extends StatefulWidget {
 class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
 
   var groupNameController = TextEditingController();
-  // TODO: get groupID of group that the user that is logged in belongs to rather than hardcoding it
-  String groupID = "group0001";
   dynamic user;
   dynamic uid;
+  var groupID = "";
+  var randomID = "";
 
   _EditGroupSettingsPageState() {
     user = FirebaseAuth.instance.currentUser;
     uid = user?.uid;
-    FirebaseDatabase.instance.ref().child("groups/$groupID/name").once()
+    // Get groupID from user
+    FirebaseDatabase.instance.ref().child("users/$uid").once()
       .then((databaseEvent) {
-        print("Successfully loaded data");
-        print("Key: " + databaseEvent.snapshot.key.toString());
-        print("Value: " + databaseEvent.snapshot.value.toString());
-        groupNameController.text = databaseEvent.snapshot.value.toString();
+        groupID = databaseEvent.snapshot.child("groupID").value.toString();
+        // Get current group name
+        FirebaseDatabase.instance.ref().child("groups/$groupID").once()
+          .then((databaseEvent) {
+            groupNameController.text = databaseEvent.snapshot.child("name").value.toString();
+          }).catchError((error) {
+            print("Failed to group name");
+            print(error);
+          });
+        randomID = databaseEvent.snapshot.child("randomID").value.toString();
       }).catchError((error) {
-        print("Failed to load data");
+        print("Failed to groupID from user");
         print(error);
       });
+
   }
 
 
@@ -123,20 +131,32 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
                 ),
               ),
               onTap: () {
-                print("leave group button pressed");
                 // Leave group: set group to null and return to JoinCreateGroupPage
+                FirebaseDatabase.instance.ref().child("groups/$groupID/users/$randomID").remove()
+                  .then((databaseEvent) {
 
-                FirebaseDatabase.instance.ref().child("users/$uid/groupID").set("null")
-                  .then((value){
-                    print("successfully left group");
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
-                          (Route<dynamic> route) => false,
-                    );
+                    // Set user groupID to null
+                    FirebaseDatabase.instance.ref().child("users/$uid/groupID").set("null")
+                      .then((value){
+
+                      }).catchError((error) {
+                        print("failed to leave group");
+                      });
+                    // Set user randomID to null
+                    FirebaseDatabase.instance.ref().child("users/$uid/randomID").set("null")
+                      .then((value){
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                              (Route<dynamic> route) => false,
+                        );
+                      }).catchError((error) {
+                        print("failed to leave group");
+                      });
                   }).catchError((error) {
-                    print("failed to leave group");
+                    print("failed to remove user from group");
                   });
+
               },
             ),
           ),

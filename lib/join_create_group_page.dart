@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/bottomnavbar_page.dart';
 
@@ -15,10 +19,17 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
 
   var inviteCode = TextEditingController();
   var groupName = TextEditingController();
+  var uid;
+
+  _JoinCreateGroupPageState() {
+    final user = FirebaseAuth.instance.currentUser;
+    uid = user?.uid;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Housemate Helper'),
         automaticallyImplyLeading: false
@@ -76,13 +87,52 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                       ),
                         onPressed: () {
                           print("invite code used");
+                          /*
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
                                 (Route<dynamic> route) => false,
                           );
+                          */
                           // TODO: check if group exists
+                          FirebaseDatabase.instance.ref().child("groupCodes").once()
+                            .then((databaseEvent) {
+                              var groupID = databaseEvent.snapshot.child(inviteCode.text).value.toString();
+                              if (groupID == "null") { // Group doesn't exist
+                                print("group doesn't exist, alert user");
+                                // TODO: Alert user
 
+                              } else { // Group exists
+                                print("group exists, joining");
+                                // Set user's current group
+                                FirebaseDatabase.instance.ref().child("users/$uid/groupID").set(groupID)
+                                  .then((databaseEvent2) {
+                                    print(" Success");
+                                    // Add user to group list
+                                    Random random = Random(DateTime.now().millisecondsSinceEpoch);
+                                    var randomID = DateTime.now().millisecondsSinceEpoch.toString() + random.nextInt(9).toString();
+                                    FirebaseDatabase.instance.ref().child("groups/$groupID/users/$randomID").set(uid)
+                                        .catchError((error) {
+                                          print("Failed to add user to group list.");
+                                        });
+                                    // Set user's current group randomID
+                                    FirebaseDatabase.instance.ref().child("users/$uid/randomID").set(randomID)
+                                      .catchError((error) {
+                                        print("Failed set user randomID.");
+                                      });
+                                    // Continue to app
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                                          (Route<dynamic> route) => false,
+                                    );
+                                  }).catchError((error) {
+                                    print("Failed to change user's group");
+                                  });
+                              }
+                            }).catchError((error) {
+                              print(error);
+                            });
                           // TODO: join group with code
                         }
                     ),
@@ -116,7 +166,7 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                   child: Container(
                     margin: EdgeInsets.only(left: 15, right: 15),
                     child: TextField(
-                      controller: inviteCode,
+                      controller: groupName,
                       obscureText: false,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
@@ -140,15 +190,56 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                           ),
                         ),
                         onPressed: () {
-                          print("created new room pressed");
+                          // --- Create new group ---
+                          Random random = Random(DateTime.now().millisecondsSinceEpoch);
+                          var groupID = DateTime.now().millisecondsSinceEpoch.toString() + random.nextInt(9).toString();
+
+                          // Set new group name
+                          FirebaseDatabase.instance.ref().child("groups/$groupID/name").set(groupName.text)
+                            .catchError((error) {
+                              print("Failed to set new group name");
+                            });
+
+                          // Set new group code
+                          random = Random(DateTime.now().millisecondsSinceEpoch);
+                          const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+                          var code = List.generate(6, (index) => _chars[random.nextInt(_chars.length)]).join();
+                          FirebaseDatabase.instance.ref().child("groups/$groupID/code").set(code)
+                            .catchError((error) {
+                              print("Failed to set new group code");
+                            });
+
+                          // Add group to list of groupCodes
+                          FirebaseDatabase.instance.ref().child("groupCodes/$code").set(groupID)
+                              .catchError((error) {
+                            print("Failed to add to groupCodes");
+                          });
+
+                          // Add user to new group
+                          random = Random(DateTime.now().millisecondsSinceEpoch);
+                          var randomID = DateTime.now().millisecondsSinceEpoch.toString() + random.nextInt(9).toString();
+                          FirebaseDatabase.instance.ref().child("groups/$groupID/users/$randomID").set(uid)
+                              .catchError((error) {
+                            print("Failed to add user to group list.");
+                          });
+
+                          // Set user's current group GroupID
+                          FirebaseDatabase.instance.ref().child("users/$uid/groupID").set(groupID)
+                              .catchError((error) {
+                            print("Failed set user randomID.");
+                          });
+
+                          // Set user's current group randomID
+                          FirebaseDatabase.instance.ref().child("users/$uid/randomID").set(randomID)
+                              .catchError((error) {
+                            print("Failed set user randomID.");
+                          });
+
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
                                 (Route<dynamic> route) => false,
                           );
-                          // TODO: create new group
-
-                          // TODO: join group with code
                         }
                     ),
                   ),

@@ -38,21 +38,21 @@ class _SettingsMenuState extends State<SettingsMenu> {
         // Get group data
         String groupID = databaseEvent.snapshot.child("groupID").value.toString();
         FirebaseDatabase.instance.ref().child('groups/$groupID').once()
-            .then((databaseEvent) {
-          groupName.text = databaseEvent.snapshot.child("name").value.toString();
-          inviteCode.text = databaseEvent.snapshot.child("code").value.toString();
-          print("Successfully loaded group data");
-          print(databaseEvent.snapshot.toString());
-          setState(() {
+          .then((databaseEvent) {
+            groupName.text = databaseEvent.snapshot.child("name").value.toString();
+            inviteCode.text = databaseEvent.snapshot.child("code").value.toString();
+            print("Successfully loaded group data");
+            print(databaseEvent.snapshot.toString());
+            setState(() {
+            });
+          }).catchError((error) {
+            print("Failed to load group data");
+            print(error);
           });
         }).catchError((error) {
-          print("Failed to load group data");
+          print("Failed to load user data");
           print(error);
         });
-      }).catchError((error) {
-        print("Failed to load user data");
-        print(error);
-      });
   }
 
   @override
