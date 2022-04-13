@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/create_menus/create_note.dart';
+import 'package:housemate_helper/items/note.dart';
 import 'package:housemate_helper/menus/settings_menu.dart';
 import 'package:housemate_helper/menus/shopping_list_menu.dart';
 
@@ -12,9 +15,43 @@ class NotesMenu extends StatefulWidget {
 
 class _NotesMenuState extends State<NotesMenu> {
 
-  List<String> titles = <String>["Note A", "Note B", "Note C", "Note D", "Note E"];
-  List<String> notes = <String>['qwerqwerqwerqwerqwerqwerqwerqwerqwerqwer\nqwer\nqwer\nqwer\nqwer\nqwer\nqwer', 'qwer', '', 'qwer', 'contents\ncontents'];
-  List<bool> checked = [false, false, false, false, false];
+  List<Note> notes = <Note>[];
+  dynamic user;
+  dynamic uid;
+  var groupID = "";
+
+  _NotesMenuState() {
+    user = FirebaseAuth.instance.currentUser;
+    uid = user?.uid;
+    // Get groupID from user
+    FirebaseDatabase.instance.ref().child("users/$uid").once()
+        .then((databaseEvent) {
+          groupID = databaseEvent.snapshot.child("groupID").value.toString();
+          GetNotes();
+        })
+        .catchError((error) { print("Failed to groupID from user"); });
+  }
+
+  // Get all notes of the current group and add them to notes list
+  void GetNotes() {
+    FirebaseDatabase.instance.ref().child("groups/$groupID/notes").once()
+        .then((databaseEvent) {
+          Map<dynamic, dynamic> values = databaseEvent.snapshot.value as Map;
+          values.forEach((k, v) {
+            var creator = "";
+            FirebaseDatabase.instance.ref().child("users/${v['creator']}/username").once()
+              .then((databaseEvent2) {
+                creator = databaseEvent2.snapshot.value.toString();
+                notes.add(Note(k, v["title"], v["body"], v["edited"], creator));
+                setState(() {
+
+                });
+              })
+              .catchError((error) { print("Failed to get note creator: " + error); });
+          });
+        })
+        .catchError((error) { print("failed to load notes: " + error); });
+  }
 
   void SelectedItem(BuildContext context, selection) {
     if (selection == 0) {
@@ -41,69 +78,85 @@ class _NotesMenuState extends State<NotesMenu> {
                       contentPadding: EdgeInsets.only(top: 8, right: 13, left: 13),
                       title: Container(
                         color: Color.fromARGB(100, 230, 220, 130),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
+                        child: Column(
                           children: [
-                            Checkbox(
-                                value: checked[index],
-                                onChanged: (bool? value) {
-                                  checked[index] = !checked[index];
-                                  setState(() {
-                                    checked[index] = value!;
-                                  });
-                                  print(checked.toString());
-                                },
-                            ),
-                            Expanded(
-                              child: Container(
-                                  padding: EdgeInsets.only(top: 15, bottom: 15),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        titles[index],
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Text(
-                                        notes[index],
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                              ),
-                            ),
-                            PopupMenuButton<int>(
-                              icon: Icon(Icons.menu),
-                              color: Colors.white,
-                              itemBuilder: (context) => [
-                                PopupMenuItem<int>(
-                                  value: 0,
-                                  child: Text(
-                                    "Edit",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Checkbox(
+                                    value: notes[index].checked,
+                                    onChanged: (bool? value) {
+                                      notes[index].checked = !notes[index].checked;
+                                      setState(() {
+                                        notes[index].checked = value!;
+                                      });
+                                      print(notes[index].checked.toString());
+                                    },
+                                ),
+                                Expanded(
+                                  child: Container(
+                                      padding: EdgeInsets.only(top: 15),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            notes[index].title,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Text(
+                                            notes[index].body,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                   ),
                                 ),
-                                PopupMenuItem<int>(
-                                  value: 1,
-                                  child: Text(
-                                    "Delete",
-                                    style: TextStyle(
-                                      color: Colors.black,
+                                PopupMenuButton<int>(
+                                  icon: Icon(Icons.menu),
+                                  color: Colors.white,
+                                  itemBuilder: (context) => [
+                                    PopupMenuItem<int>(
+                                      value: 0,
+                                      child: Text(
+                                        "Edit",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    PopupMenuItem<int>(
+                                      value: 1,
+                                      child: Text(
+                                        "Delete",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  onSelected: (selection) => {
+                                    SelectedItem(context, selection)
+                                  },
                                 ),
                               ],
-                              onSelected: (selection) => {
-                                SelectedItem(context, selection)
-                              },
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(top: 10, right: 10, bottom: 10),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  notes[index].user,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
