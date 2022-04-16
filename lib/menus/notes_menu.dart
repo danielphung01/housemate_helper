@@ -44,8 +44,9 @@ class _NotesMenuState extends State<NotesMenu> {
               .then((databaseEvent2) {
                 creator = databaseEvent2.snapshot.value.toString();
                 notes.insert(0, Note(k, v["title"], v["body"], false, v["edited"], creator));
+                // Makes sure that all notes are returned in order (inefficient)
                 setState(() {
-
+                  sortList();
                 });
               })
               .catchError((error) { print("Failed to add note to list of notes: " + error); });
@@ -53,6 +54,7 @@ class _NotesMenuState extends State<NotesMenu> {
         })
         .catchError((error) { print("failed to load notes: " + error); });
   }
+
 
   void SelectedItem(BuildContext context, selection, noteID) {
     if (selection == 0) {
@@ -66,7 +68,22 @@ class _NotesMenuState extends State<NotesMenu> {
             GetNotes();
           })
           .catchError((error) { print("Failed to delete note: " + error); });
-      print('delete');
+    }
+  }
+
+  // Sort list of notes from newest to oldest
+  void sortList() {
+    notes.sort((a, b) => b.number.compareTo(a.number));
+  }
+
+  // Delete multiple notes (all that are checked)
+  void deleteNotes() {
+    for (var i = 0; i < notes.length; i++) {
+      if (notes[i].checked) {
+        FirebaseDatabase.instance.ref().child("groups/$groupID/notes/${notes[i].number}").remove()
+            .then((databaseEvent) { setState(() { }); })
+            .catchError((error) { print("Failed to delete note: " + error); });
+      }
     }
   }
 

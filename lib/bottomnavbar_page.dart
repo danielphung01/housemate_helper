@@ -48,6 +48,14 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
     });
   }
 
+  void deleteButtonPressed() {
+    if (_selectedIndex == 1) {  // Current page: Notes page
+      //deleteNotes();
+    }
+    if (_selectedIndex == 2) {  // Current page: Shopping List page
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +70,7 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
                 onTap: () {
-                  print('delete');
+                  deleteButtonPressed();
                 },
                 child: Icon (
                   Icons.delete,
