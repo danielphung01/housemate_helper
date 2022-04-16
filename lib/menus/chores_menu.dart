@@ -16,18 +16,15 @@ class _ChoresMenuState extends State<ChoresMenu> {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            child: RaisedButton(
-              child: Text('temp button'),
-              onPressed: () {
-                print("button Pressed");
-                // TEMP BUTTON
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ExpensesMenu()),
-                );
-              },
-            ),
+          Expanded(
+              child: ListView.builder(
+                  itemCount: 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.only(top: 8, right: 13, left: 13),
+                    );
+                  }
+              )
           ),
         ],
       ),

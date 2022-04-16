@@ -37,30 +37,35 @@ class _NotesMenuState extends State<NotesMenu> {
     FirebaseDatabase.instance.ref().child("groups/$groupID/notes").once()
         .then((databaseEvent) {
           Map<dynamic, dynamic> values = databaseEvent.snapshot.value as Map;
+          notes.clear();
           values.forEach((k, v) {
             var creator = "";
             FirebaseDatabase.instance.ref().child("users/${v['creator']}/username").once()
               .then((databaseEvent2) {
                 creator = databaseEvent2.snapshot.value.toString();
-                notes.add(Note(k, v["title"], v["body"], v["edited"], creator));
+                notes.insert(0, Note(k, v["title"], v["body"], v["edited"], creator));
                 setState(() {
 
                 });
               })
-              .catchError((error) { print("Failed to get note creator: " + error); });
+              .catchError((error) { print("Failed to add note to list of notes: " + error); });
           });
         })
         .catchError((error) { print("failed to load notes: " + error); });
   }
 
-  void SelectedItem(BuildContext context, selection) {
+  void SelectedItem(BuildContext context, selection, noteID) {
     if (selection == 0) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Edit Note', isExistingItem: true))),
       );
     } else if (selection == 1) {
-      // TODO: delete item from database logic here
+      FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID").remove()
+          .then((databaseEvent) {
+            GetNotes();
+          })
+          .catchError((error) { print("Failed to delete note: " + error); });
       print('delete');
     }
   }
@@ -141,7 +146,7 @@ class _NotesMenuState extends State<NotesMenu> {
                                     ),
                                   ],
                                   onSelected: (selection) => {
-                                    SelectedItem(context, selection)
+                                    SelectedItem(context, selection, notes[index].number)
                                   },
                                 ),
                               ],

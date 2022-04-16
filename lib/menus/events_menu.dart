@@ -17,22 +17,15 @@ class _EventsMenuState extends State<EventsMenu> {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            child: RaisedButton(
-              child: Text('temp button'),
-              onPressed: () {
-                print("button Pressed");
-                // TEMP BUTTON
-                FirebaseAuth.instance.authStateChanges()
-                  .listen((User? user) {
-                    if (user == null) {
-                      print("user is currently signed out");
-                    } else {
-                      print("user is signed in");
-                    }
-                  });
-              },
-            ),
+          Expanded(
+              child: ListView.builder(
+                  itemCount: 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.only(top: 8, right: 13, left: 13),
+                    );
+                  }
+              )
           ),
         ],
       ),

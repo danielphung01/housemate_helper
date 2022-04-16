@@ -16,17 +16,15 @@ class _ExpensesMenuState extends State<ExpensesMenu> {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            child: RaisedButton(
-              child: Text('temp button'),
-              onPressed: () {
-                print("button Pressed");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EventsMenu()),
-                );
-              },
-            ),
+          Expanded(
+              child: ListView.builder(
+                  itemCount: 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.only(top: 8, right: 13, left: 13),
+                    );
+                  }
+              )
           ),
         ],
       ),
