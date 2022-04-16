@@ -3,8 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/create_menus/create_note.dart';
 import 'package:housemate_helper/items/note.dart';
-import 'package:housemate_helper/menus/settings_menu.dart';
-import 'package:housemate_helper/menus/shopping_list_menu.dart';
+import 'package:intl/intl.dart';
 
 class NotesMenu extends StatefulWidget {
   const NotesMenu({Key? key}) : super(key: key);
@@ -19,6 +18,7 @@ class _NotesMenuState extends State<NotesMenu> {
   dynamic user;
   dynamic uid;
   var groupID = "";
+  final dateFormat = DateFormat('MM/dd/yyyy');
 
   _NotesMenuState() {
     user = FirebaseAuth.instance.currentUser;
@@ -43,7 +43,7 @@ class _NotesMenuState extends State<NotesMenu> {
             FirebaseDatabase.instance.ref().child("users/${v['creator']}/username").once()
               .then((databaseEvent2) {
                 creator = databaseEvent2.snapshot.value.toString();
-                notes.insert(0, Note(k, v["title"], v["body"], v["edited"], creator));
+                notes.insert(0, Note(k, v["title"], v["body"], false, v["edited"], creator));
                 setState(() {
 
                 });
@@ -58,7 +58,7 @@ class _NotesMenuState extends State<NotesMenu> {
     if (selection == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Edit Note', isExistingItem: true))),
+        MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Edit Note', isExistingItem: true, noteID: noteID))),
       );
     } else if (selection == 1) {
       FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID").remove()
@@ -151,18 +151,46 @@ class _NotesMenuState extends State<NotesMenu> {
                                 ),
                               ],
                             ),
-                            Container(
-                              padding: EdgeInsets.only(top: 10, right: 10, bottom: 10),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  notes[index].user,
-                                  style: TextStyle(
-                                    fontSize: 16,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
+                                      child: Text(
+                                        dateFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(notes[index].number))),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                                      child: Visibility(
+                                        visible: notes[index].edited,
+                                        child: Text(
+                                          ", edited",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(top: 10, right: 10, bottom: 10),
+                                  child: Text(
+                                    notes[index].user,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
+                              ],
+                            )
+
                           ],
                         ),
                       ),
@@ -177,7 +205,7 @@ class _NotesMenuState extends State<NotesMenu> {
           // creating a new item
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Create Note', isExistingItem: false))),
+            MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Create Note', isExistingItem: false, noteID: "0"))),
           );
         },
         backgroundColor: Colors.lightBlue,

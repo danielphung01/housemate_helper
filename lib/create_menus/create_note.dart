@@ -1,14 +1,13 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class CreateNote extends StatefulWidget {
-  const CreateNote({Key? key, required this.isExistingItem, required this.pageTitle}) : super(key: key);
+  const CreateNote({Key? key, required this.pageTitle, required this.isExistingItem, required this.noteID}) : super(key: key);
 
-  final bool isExistingItem;
   final String pageTitle;
+  final bool isExistingItem;
+  final String noteID;
 
   @override
   State<CreateNote> createState() => _CreateNoteState();
@@ -32,10 +31,27 @@ class _CreateNoteState extends State<CreateNote> {
         .then((databaseEvent) {
           groupID = databaseEvent.snapshot.child("groupID").value.toString();
           randomID = databaseEvent.snapshot.child("randomID").value.toString();
+
+          // Autofill text from existing note that is to be edited
+          if (widget.isExistingItem) {
+            FirebaseDatabase.instance.ref().child("groups/$groupID/notes/${widget.noteID}").once()
+                .then((databaseEvent) {
+              titleController.text = databaseEvent.snapshot.child("title").value.toString();
+              bodyController.text = databaseEvent.snapshot.child("body").value.toString();
+              setState(() {
+
+              });
+            })
+                .catchError((error) { print("Failed to get note to edit"); });
+          }
         })
         .catchError((error) { print("Failed to groupID from user"); });
+  }
 
-}
+  void deleteNote() {
+    FirebaseDatabase.instance.ref().child("groups/$groupID/notes/${widget.noteID}").remove()
+        .catchError((error) { print("Failed to delete old note: " + error); });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +67,8 @@ class _CreateNoteState extends State<CreateNote> {
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
                 onTap: () {
-                  print('delete');
+                  deleteNote();
+                  Navigator.of(context).pop();
                 },
                 child: Icon (
                   Icons.delete,
@@ -93,15 +110,23 @@ class _CreateNoteState extends State<CreateNote> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // Delete old note
+          if (widget.isExistingItem) { // Delete the old note, to be replace
+            deleteNote();
+          }
           // Create random noteID
-          Random random = Random(DateTime.now().millisecondsSinceEpoch);
           noteID = DateTime.now().millisecondsSinceEpoch.toString();
           FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID/title").set(titleController.text)
               .then((databaseEvent) {
                 FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID/body").set(bodyController.text)
                     .catchError((error) { print(error); });
-                FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID/edited").set(false)
-                    .catchError((error) { print(error); });
+                if (widget.isExistingItem) {  // Was an edited item
+                  FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID/edited").set(true)
+                      .catchError((error) { print(error); });
+                } else {  // Was not an edited item
+                  FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID/edited").set(false)
+                      .catchError((error) { print(error); });
+                }
                 FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID/creator").set(uid)
                     .catchError((error) { print(error); });
                 Navigator.of(context).pop();
