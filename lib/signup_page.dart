@@ -1,3 +1,5 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
@@ -118,6 +120,12 @@ class _SignupPageState extends State<SignupPage> {
                                 .then((value) {
                                   print("Successfully signed up");
                                   print(value.user!.uid);
+                                  FirebaseDatabase.instance.ref().child("users/${value.user!.uid}/groupID").set("null")
+                                    .catchError((error) { print(error.toString()); });
+                                  FirebaseDatabase.instance.ref().child("users/${value.user!.uid}/randomID").set("null")
+                                      .catchError((error) { print(error.toString()); });
+                                  FirebaseDatabase.instance.ref().child("users/${value.user!.uid}/username").set(usernameController.text)
+                                      .catchError((error) { print(error.toString()); });
                                   Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
@@ -126,7 +134,7 @@ class _SignupPageState extends State<SignupPage> {
                                 }).catchError((error) {
                                   print("Failed to sign up");
                                   print(error.toString());
-                                  // TODO:
+                                  // TODO: show "failed to sign up"
                                 });
                           } else {
                             print("passwords are not the same");

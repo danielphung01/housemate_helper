@@ -51,9 +51,10 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
   void deleteButtonPressed() {
     if (_selectedIndex == 1) {  // Current page: Notes page
       //deleteNotes();
+      print("delete button pressed (Notes page)");
     }
     if (_selectedIndex == 2) {  // Current page: Shopping List page
-
+      print("delete button pressed (Shopping List page)");
     }
   }
 
