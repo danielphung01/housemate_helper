@@ -87,132 +87,141 @@ class _NotesMenuState extends State<NotesMenu> {
     }
   }
 
+  Future<void> _pullRefresh() async {
+    await Future.delayed(Duration(seconds: 1), (){});
+    GetNotes();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           Expanded(
-              child: ListView.builder(
-                  itemCount: notes.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      contentPadding: EdgeInsets.only(top: 8, right: 13, left: 13),
-                      title: Container(
-                        color: Color.fromARGB(100, 230, 220, 130),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Checkbox(
-                                    value: notes[index].checked,
-                                    onChanged: (bool? value) {
-                                      notes[index].checked = !notes[index].checked;
-                                      setState(() {
-                                        notes[index].checked = value!;
-                                      });
-                                      print(notes[index].checked.toString());
-                                    },
-                                ),
-                                Expanded(
-                                  child: Container(
-                                      padding: EdgeInsets.only(top: 15),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            notes[index].title,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          Text(
-                                            notes[index].body,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                      )
+              child: RefreshIndicator(
+                onRefresh: _pullRefresh,
+                child: ListView.builder(
+                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                    itemCount: notes.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        contentPadding: EdgeInsets.only(top: 8, right: 13, left: 13),
+                        title: Container(
+                          color: Color.fromARGB(100, 230, 220, 130),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Checkbox(
+                                      value: notes[index].checked,
+                                      onChanged: (bool? value) {
+                                        notes[index].checked = !notes[index].checked;
+                                        setState(() {
+                                          notes[index].checked = value!;
+                                        });
+                                        print(notes[index].checked.toString());
+                                      },
                                   ),
-                                ),
-                                PopupMenuButton<int>(
-                                  icon: Icon(Icons.menu),
-                                  color: Colors.white,
-                                  itemBuilder: (context) => [
-                                    PopupMenuItem<int>(
-                                      value: 0,
-                                      child: Text(
-                                        "Edit",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
+                                  Expanded(
+                                    child: Container(
+                                        padding: EdgeInsets.only(top: 15),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              notes[index].title,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              notes[index].body,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                     ),
-                                    PopupMenuItem<int>(
-                                      value: 1,
-                                      child: Text(
-                                        "Delete",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                  onSelected: (selection) => {
-                                    SelectedItem(context, selection, notes[index].number)
-                                  },
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
-                                      child: Text(
-                                        dateFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(notes[index].number))),
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                                      child: Visibility(
-                                        visible: notes[index].edited,
+                                  ),
+                                  PopupMenuButton<int>(
+                                    icon: Icon(Icons.menu),
+                                    color: Colors.white,
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem<int>(
+                                        value: 0,
                                         child: Text(
-                                          ", edited",
+                                          "Edit",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      PopupMenuItem<int>(
+                                        value: 1,
+                                        child: Text(
+                                          "Delete",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                    onSelected: (selection) => {
+                                      SelectedItem(context, selection, notes[index].number)
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
+                                        child: Text(
+                                          dateFormat.format(DateTime.fromMillisecondsSinceEpoch(int.parse(notes[index].number))),
                                           style: TextStyle(
                                             fontSize: 16,
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(top: 10, right: 10, bottom: 10),
-                                  child: Text(
-                                    notes[index].user,
-                                    style: TextStyle(
-                                      fontSize: 16,
+                                      Container(
+                                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                                        child: Visibility(
+                                          visible: notes[index].edited,
+                                          child: Text(
+                                            ", edited",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(top: 10, right: 10, bottom: 10),
+                                    child: Text(
+                                      notes[index].user,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            )
+                                ],
+                              )
 
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }
+                      );
+                    }
+                ),
               )
           ),
         ],
