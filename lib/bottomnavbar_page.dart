@@ -27,74 +27,17 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
     ExpensesMenu()
   ];
 
-  static final List<String> _pageTitles = <String>[
-    'Events',
-    'Notes',
-    'Shopping List',
-    'Chores',
-    'Expenses'
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      appBarTitleText = _pageTitles[index];
-
-      if (index == 1 || index == 2) {
-        deleteButtonVisible = true;
-      } else {
-        deleteButtonVisible = false;
-      }
     });
   }
 
-  void deleteButtonPressed() {
-    if (_selectedIndex == 1) {  // Current page: Notes page
-      //deleteNotes();
-      print("delete button pressed (Notes page)");
-    }
-    if (_selectedIndex == 2) {  // Current page: Shopping List page
-      print("delete button pressed (Shopping List page)");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(appBarTitleText),
-        automaticallyImplyLeading: false,
-        actions: [
-          Visibility(
-            visible: deleteButtonVisible,
-            child: Container(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  deleteButtonPressed();
-                },
-                child: Icon (
-                  Icons.delete,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsMenu()),
-                );
-              },
-              child: Icon (
-                Icons.person,
-              ),
-            ),
-          ),
-        ],
-      ),
 
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),

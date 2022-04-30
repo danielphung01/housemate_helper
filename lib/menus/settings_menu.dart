@@ -20,7 +20,6 @@ class _SettingsMenuState extends State<SettingsMenu> {
   var username = TextEditingController();
   var groupName = TextEditingController();
   var inviteCode = TextEditingController();
-  // TODO: get groupID of group that the user that is logged in belongs to rather than hardcoding it
 
   _SettingsMenuState() {
     fillData();

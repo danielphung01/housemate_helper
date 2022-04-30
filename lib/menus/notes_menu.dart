@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/create_menus/create_note.dart';
 import 'package:housemate_helper/items/note.dart';
+import 'package:housemate_helper/menus/settings_menu.dart';
 import 'package:intl/intl.dart';
 
 class NotesMenu extends StatefulWidget {
@@ -92,9 +93,44 @@ class _NotesMenuState extends State<NotesMenu> {
     GetNotes();
   }
 
+  void deleteButtonPressed() {
+    print("delete button pressed");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Notes"),
+        automaticallyImplyLeading: false,
+        actions: [
+          Container(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                deleteButtonPressed();
+              },
+              child: Icon (
+                Icons.delete,
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsMenu()),
+                );
+              },
+              child: Icon (
+                Icons.person,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
