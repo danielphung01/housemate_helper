@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "130234296969",
+    "firebase_url": "https://housematehelper-3cd51-default-rtdb.firebaseio.com",
+    "project_id": "housematehelper-3cd51",
+    "storage_bucket": "housematehelper-3cd51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130234296969:android:c88c47c08bd5f745fbb458",
+        "android_client_info": {
+          "package_name": "com.phung.housemate_helper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130234296969-9lhhcqargs9qkpsk9jo25eej0le6qbc0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpaZzweiMu_s-u-h46HPS4IKo7s9I4Gl4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130234296969-9lhhcqargs9qkpsk9jo25eej0le6qbc0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "130234296969-m0jlu84ml7amvit3k2kb2na102muuq49.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "edu.cpp.housematehelper"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -236,7 +236,23 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
             ),
           ),
           Expanded(
-            flex: 52,
+            flex: 10,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                margin: EdgeInsets.only(top: 10, left: 15),
+                child: Text(
+                  '* All information you enter while using this application will be stored, but never shared.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 42,
             child: Text(
                 ''
               ),
