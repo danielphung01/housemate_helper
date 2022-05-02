@@ -31,6 +31,11 @@ class _NotesMenuState extends State<NotesMenu> {
           GetNotes();
         })
         .catchError((error) { print("Failed to groupID from user"); });
+
+    // Set all notes as unchecked
+    for (var i = 0; i < notes.length; i++) {
+      notes[i].checked = false;
+    }
   }
 
   // Get all notes of the current group and add them to notes list
@@ -65,9 +70,7 @@ class _NotesMenuState extends State<NotesMenu> {
       );
     } else if (selection == 1) {
       FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID").remove()
-          .then((databaseEvent) {
-            GetNotes();
-          })
+          .then((databaseEvent) { })
           .catchError((error) { print("Failed to delete note: " + error); });
     }
   }
@@ -86,15 +89,12 @@ class _NotesMenuState extends State<NotesMenu> {
             .catchError((error) { print("Failed to delete note: " + error); });
       }
     }
+    GetNotes();
   }
 
   Future<void> _pullRefresh() async {
     await Future.delayed(Duration(seconds: 1), (){});
     GetNotes();
-  }
-
-  void deleteButtonPressed() {
-    print("delete button pressed");
   }
 
   @override
@@ -108,7 +108,7 @@ class _NotesMenuState extends State<NotesMenu> {
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {
-                deleteButtonPressed();
+                deleteNotes();
               },
               child: Icon (
                 Icons.delete,
@@ -157,7 +157,6 @@ class _NotesMenuState extends State<NotesMenu> {
                                       setState(() {
                                         notes[index].checked = value!;
                                       });
-                                      print(notes[index].checked.toString());
                                     },
                                   ),
                                   Expanded(
