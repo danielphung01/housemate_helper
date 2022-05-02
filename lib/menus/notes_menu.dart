@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:housemate_helper/create_menus/create_note.dart';
 import 'package:housemate_helper/menus/settings_menu.dart';
 import 'package:housemate_helper/items/note.dart';
+import 'package:housemate_helper/menus/settings_menu.dart';
 import 'package:intl/intl.dart';
 
 class NotesMenu extends StatefulWidget {
@@ -85,7 +86,8 @@ class _NotesMenuState extends State<NotesMenu> {
     for (var i = 0; i < notes.length; i++) {
       if (notes[i].checked) {
         FirebaseDatabase.instance.ref().child("groups/$groupID/notes/${notes[i].number}").remove()
-            .then((databaseEvent) { setState(() { }); })
+            .then((databaseEvent) {
+            })
             .catchError((error) { print("Failed to delete note: " + error); });
       }
     }
