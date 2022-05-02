@@ -1,4 +1,4 @@
-package edu.cpp.cs4750.housematehelper.housemate_helper
+package com.phung.housemate_helper
 
 import io.flutter.embedding.android.FlutterActivity
 

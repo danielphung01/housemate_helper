@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.cpp.cs4750.housematehelper.housemate_helper">
+    package="com.phung.housemate_helper">
    <application
         android:label="housemate_helper"
         android:name="${applicationName}"
