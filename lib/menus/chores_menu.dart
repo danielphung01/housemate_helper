@@ -14,6 +14,26 @@ class _ChoresMenuState extends State<ChoresMenu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Chores"),
+        automaticallyImplyLeading: false,
+        actions: [
+          Container(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsMenu()),
+                );
+              },
+              child: Icon (
+                Icons.person,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(

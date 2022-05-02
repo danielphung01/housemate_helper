@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/create_menus/create_event.dart';
+import 'package:housemate_helper/menus/settings_menu.dart';
 
 class EventsMenu extends StatefulWidget {
   const EventsMenu({Key? key}) : super(key: key);
@@ -15,6 +16,26 @@ class _EventsMenuState extends State<EventsMenu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Events"),
+        automaticallyImplyLeading: false,
+        actions: [
+          Container(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsMenu()),
+                );
+              },
+              child: Icon (
+                Icons.person,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(

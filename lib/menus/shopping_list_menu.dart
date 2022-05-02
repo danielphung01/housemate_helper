@@ -11,9 +11,45 @@ class ShoppingListMenu extends StatefulWidget {
 }
 
 class _ShoppingListMenuState extends State<ShoppingListMenu> {
+
+  void deleteButtonPressed() {
+    print("delete button pressed");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Shopping List"),
+        automaticallyImplyLeading: false,
+        actions: [
+          Container(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                deleteButtonPressed();
+              },
+              child: Icon (
+                Icons.delete,
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsMenu()),
+                );
+              },
+              child: Icon (
+                Icons.person,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
