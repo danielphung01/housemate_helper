@@ -19,6 +19,8 @@ class _LoginPageState extends State<LoginPage> {
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  bool loginErrorMsgVisibility = false;
+  var errorMsg = "";
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,18 @@ class _LoginPageState extends State<LoginPage> {
                           border: OutlineInputBorder(),
                           labelText: 'Password',
                         ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Visibility(
+                        visible: loginErrorMsgVisibility,
+                        child: Text(
+                          errorMsg,
+                          style: TextStyle(
+                            color: Colors.red
+                          ),
+                        )
                       ),
                     ),
                     Container(
@@ -132,13 +146,21 @@ class _LoginPageState extends State<LoginPage> {
                                     );
                                   }
                                 }).catchError((error) {
-                                  print("Failed to check user's current group");
-                                  print(error);
+                                  loginErrorMsgVisibility = true;
+                                  errorMsg = "Internal Error.";
+                                  setState(() { });
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LoginPage()),
+                                        (Route<dynamic> route) => false,
+                                  );
                                 });
 
                               }).catchError((error) {
-                                print("Failed to log in");
-                                print(error.toString());
+                                loginErrorMsgVisibility = true;
+                                errorMsg = "Invalid email or password.";
+                                setState(() { });
                               });
                         },
                       ),

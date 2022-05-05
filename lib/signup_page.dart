@@ -20,7 +20,9 @@ class _SignupPageState extends State<SignupPage> {
   var usernameController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
-  bool passwordErrorMessageVisibility = false;
+
+  bool signupErrorMsgVisibility = false;
+  var errorMsg = "";
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +86,17 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                     ),
-                    Visibility(
-                      child: Text(
-                        'Invalid email or password.',
-                        style: TextStyle(
-                          color: Colors.red,
+                    Container(
+                      margin: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Visibility(
+                        child: Text(
+                          errorMsg,
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
                         ),
+                        visible: signupErrorMsgVisibility,
                       ),
-                      visible: passwordErrorMessageVisibility,
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 10),
@@ -132,13 +137,14 @@ class _SignupPageState extends State<SignupPage> {
                                         (Route<dynamic> route) => false,
                                   );
                                 }).catchError((error) {
-                                  print("Failed to sign up");
-                                  print(error.toString());
-                                  // TODO: show "failed to sign up"
+                                  errorMsg = "Failed to sign up";
+                                  signupErrorMsgVisibility = true;
+                                  setState(() { });
                                 });
                           } else {
-                            print("passwords are not the same");
-                            // TODO: show "passwords must be matching prompt"
+                            errorMsg = "Passwords are not the same.";
+                            signupErrorMsgVisibility = true;
+                            setState(() { });
                           }
                           /*
                           Navigator.pushAndRemoveUntil(
