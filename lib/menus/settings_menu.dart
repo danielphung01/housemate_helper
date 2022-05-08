@@ -8,6 +8,8 @@ import 'package:housemate_helper/setting_pages/edit_group_settings_page.dart';
 import 'package:housemate_helper/setting_pages/edit_profile_page.dart';
 import 'package:housemate_helper/setting_pages/make_annoucement_page.dart';
 
+import '../resources/fadeAnimation.dart';
+
 class SettingsMenu extends StatefulWidget {
   const SettingsMenu({Key? key}) : super(key: key);
 
@@ -221,7 +223,8 @@ class _SettingsMenuState extends State<SettingsMenu> {
                 await FirebaseAuth.instance.signOut();
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    FadeRoute(page: LoginPage()),
+                    //MaterialPageRoute(builder: (context) => LoginPage()),
                     (Route<dynamic> route) => false,
                 );
               },

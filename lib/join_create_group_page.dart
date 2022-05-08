@@ -5,8 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:housemate_helper/bottomnavbar_page.dart';
-
 import 'login_page.dart';
+import 'package:housemate_helper/resources/fadeAnimation.dart';
 
 class JoinCreateGroupPage extends StatefulWidget {
   const JoinCreateGroupPage({Key? key}) : super(key: key);
@@ -115,7 +115,8 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                                 // Continue to app
                                 Navigator.pushAndRemoveUntil(
                                   context,
-                                  MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                                  FadeRoute(page: BottomNavigationBarPage()),
+                                  //MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
                                       (Route<dynamic> route) => false,
                                 );
                               }
@@ -225,7 +226,8 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
 
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                            FadeRoute(page: BottomNavigationBarPage()),
+                            //MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
                                 (Route<dynamic> route) => false,
                           );
                         }
@@ -278,7 +280,8 @@ class _JoinCreateGroupPageState extends State<JoinCreateGroupPage> {
                 await FirebaseAuth.instance.signOut();
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  FadeRoute(page: LoginPage()),
+                  //MaterialPageRoute(builder: (context) => LoginPage()),
                       (Route<dynamic> route) => false,
                 );
               },

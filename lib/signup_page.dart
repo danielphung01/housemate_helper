@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:housemate_helper/resources/fadeAnimation.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -133,7 +134,8 @@ class _SignupPageState extends State<SignupPage> {
                                       .catchError((error) { print(error.toString()); });
                                   Navigator.pushAndRemoveUntil(
                                     context,
-                                    MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                                    FadeRoute(page: JoinCreateGroupPage()),
+                                    //MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
                                         (Route<dynamic> route) => false,
                                   );
                                 }).catchError((error) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:housemate_helper/bottomnavbar_page.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
 import 'login_page.dart';
+import 'package:housemate_helper/resources/fadeAnimation.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -13,8 +14,6 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
-
 
 class _MyHomePageState extends State<MyHomePage> {
 
@@ -37,15 +36,17 @@ class _MyHomePageState extends State<MyHomePage> {
           // The user is in a group
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
-                (Route<dynamic> route) => false,
+            FadeRoute(page: BottomNavigationBarPage()),
+            //MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+            (Route<dynamic> route) => false,
           );
         } else {
           // The user is not in a group
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
-                (Route<dynamic> route) => false,
+            FadeRoute(page: JoinCreateGroupPage()),
+            //MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+              (Route<dynamic> route) => false,
           );
         }
       }).catchError((error) {
@@ -56,8 +57,9 @@ class _MyHomePageState extends State<MyHomePage> {
       print("user is currently signed out");
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-            (Route<dynamic> route) => false,
+        FadeRoute(page: LoginPage()),
+        //MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false,
       );
     }
   }

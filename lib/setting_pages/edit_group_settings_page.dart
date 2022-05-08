@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
 
 import '../menus/settings_menu.dart';
+import '../resources/fadeAnimation.dart';
 
 class EditGroupSettingsPage extends StatefulWidget {
   const EditGroupSettingsPage({Key? key}) : super(key: key);
@@ -146,7 +147,8 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
                     });
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                      FadeRoute(page: JoinCreateGroupPage()),
+                      //MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
                           (Route<dynamic> route) => false,
                     );
                   }).catchError((error) {

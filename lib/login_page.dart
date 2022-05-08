@@ -5,6 +5,7 @@ import 'package:housemate_helper/bottomnavbar_page.dart';
 import 'package:housemate_helper/join_create_group_page.dart';
 import 'package:housemate_helper/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:housemate_helper/resources/fadeAnimation.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -32,8 +33,8 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Expanded(
               flex: 30,
-              child: Image(
-                image: NetworkImage("https://4m4you.com/wp-content/uploads/2020/06/logo-placeholder.png"),
+              child: Image.asset(
+                'assets/images/house_photo.png'
               ),
             ),
             Expanded(
@@ -128,34 +129,37 @@ class _LoginPageState extends State<LoginPage> {
                                 var uid = FirebaseAuth.instance.currentUser?.uid;
                                 FirebaseDatabase.instance.ref().child('users/$uid').once()
                                     .then((databaseEvent) {
-                                  String groupID = databaseEvent.snapshot.child("groupID").value.toString();
+                                      String groupID = "null";
+                                      groupID = databaseEvent.snapshot.child("groupID").value.toString();
 
-                                  if (groupID != "null") {
-                                    // The user is in a group
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
-                                          (Route<dynamic> route) => false,
-                                    );
-                                  } else {
-                                    // The user is not in a group
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
-                                          (Route<dynamic> route) => false,
-                                    );
-                                  }
-                                }).catchError((error) {
-                                  loginErrorMsgVisibility = true;
-                                  errorMsg = "Internal Error.";
-                                  setState(() { });
-                                  FirebaseAuth.instance.signOut();
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => LoginPage()),
-                                        (Route<dynamic> route) => false,
-                                  );
-                                });
+                                      if (groupID != "null") {
+                                        // The user is in a group
+                                        Navigator.pushAndRemoveUntil(
+                                          context,
+                                          FadeRoute(page: BottomNavigationBarPage()),
+                                          //MaterialPageRoute(builder: (context) => BottomNavigationBarPage()),
+                                              (Route<dynamic> route) => false,
+                                        );
+                                      } else {
+                                        // The user is not in a group
+                                        Navigator.pushAndRemoveUntil(
+                                          context,
+                                          FadeRoute(page: JoinCreateGroupPage()),
+                                          //MaterialPageRoute(builder: (context) => JoinCreateGroupPage()),
+                                              (Route<dynamic> route) => false,
+                                        );
+                                      }
+                                    }).catchError((error) {
+                                      loginErrorMsgVisibility = true;
+                                      errorMsg = "Internal Error.";
+                                      setState(() { });
+                                      FirebaseAuth.instance.signOut();
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => LoginPage()),
+                                            (Route<dynamic> route) => false,
+                                      );
+                                    });
 
                               }).catchError((error) {
                                 loginErrorMsgVisibility = true;
