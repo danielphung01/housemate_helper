@@ -24,7 +24,8 @@ class _MyHomePageState extends State<MyHomePage> {
     WidgetsBinding.instance?.addPostFrameCallback((_) => checkLoginStatus());
   }
 
-  void checkLoginStatus() {
+  Future<void> checkLoginStatus() async {
+    await Future.delayed(Duration(seconds: 1), (){});
     if (FirebaseAuth.instance.currentUser != null) { // A user is signed in, proceed to app
       print("user is signed in");
       // Check if account is tied to room, if not, go to join_create_group_page
@@ -64,10 +65,23 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // TODO: add loading screen here
-        ],
+      body: Container(
+        color: Colors.lightBlue,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Loading Screen
+              Text(
+                "Loading...",
+                style: TextStyle(
+                  fontSize: 40,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
