@@ -18,6 +18,7 @@ class _NotesMenuState extends State<NotesMenu> {
   List<Note> notes = <Note>[];
   dynamic user;
   dynamic uid;
+  dynamic username;
   var groupID = "";
   final dateFormat = DateFormat('MM/dd/yyyy');
 
@@ -28,6 +29,7 @@ class _NotesMenuState extends State<NotesMenu> {
     FirebaseDatabase.instance.ref().child("users/$uid").once()
         .then((databaseEvent) {
           groupID = databaseEvent.snapshot.child("groupID").value.toString();
+          username = databaseEvent.snapshot.child("username").value.toString();
           GetNotes();
         })
         .catchError((error) { print("Failed to groupID from user"); });
@@ -62,12 +64,16 @@ class _NotesMenuState extends State<NotesMenu> {
   }
 
 
-  void SelectedItem(BuildContext context, selection, noteID) {
+  void SelectedItem(BuildContext context, selection, noteID, user) {
     if (selection == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Edit Note', isExistingItem: true, noteID: noteID))),
-      );
+      if (user == username) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => (CreateNote(pageTitle: 'Edit Note', isExistingItem: true, noteID: noteID))),
+        );
+      } else {
+        showAlertDialog(context);
+      }
     } else if (selection == 1) {
       FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID").remove()
           .then((databaseEvent) { })
@@ -95,6 +101,21 @@ class _NotesMenuState extends State<NotesMenu> {
   Future<void> _pullRefresh() async {
     await Future.delayed(Duration(seconds: 1), (){});
     GetNotes();
+  }
+
+  // Alert to tell user that they can't edit another person's note
+  void showAlertDialog(BuildContext context) {
+
+    AlertDialog alert = AlertDialog(
+      content: Text("You cannot edit another person's note."),
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override
@@ -206,7 +227,7 @@ class _NotesMenuState extends State<NotesMenu> {
                                       ),
                                     ],
                                     onSelected: (selection) => {
-                                      SelectedItem(context, selection, notes[index].number)
+                                      SelectedItem(context, selection, notes[index].number, notes[index].user)
                                     },
                                   ),
                                 ],

@@ -110,12 +110,11 @@ class _CreateNoteState extends State<CreateNote> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Delete old note
-          if (widget.isExistingItem) { // Delete the old note, to be replace
-            deleteNote();
+          if (widget.isExistingItem) { // Editing existing note, keep same noteID
+            noteID = widget.noteID;
+          } else { // New note, create new noteID
+            noteID = DateTime.now().millisecondsSinceEpoch.toString();
           }
-          // Create random noteID
-          noteID = DateTime.now().millisecondsSinceEpoch.toString();
           FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID/title").set(titleController.text)
               .then((databaseEvent) {
                 FirebaseDatabase.instance.ref().child("groups/$groupID/notes/$noteID/body").set(bodyController.text)
