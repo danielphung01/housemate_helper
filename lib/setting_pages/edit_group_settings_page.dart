@@ -16,6 +16,7 @@ class EditGroupSettingsPage extends StatefulWidget {
 
 class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
 
+  List<String> usernames = <String>[];
   var groupNameController = TextEditingController();
   dynamic user;
   dynamic uid;
@@ -38,11 +39,32 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
             print(error);
           });
         randomID = databaseEvent.snapshot.child("randomID").value.toString();
+
+        // Get list of users
+        getGroupUsers();
+
       }).catchError((error) {
         print("Failed to groupID from user");
         print(error);
       });
 
+  }
+
+  void getGroupUsers() {
+    FirebaseDatabase.instance.ref().child("groups/$groupID/users").once()
+        .then((databaseEvent) {
+          Map<dynamic, dynamic> values = databaseEvent.snapshot.value as Map;
+          usernames.clear();
+          values.forEach((k, v) {
+            FirebaseDatabase.instance.ref().child("users/$v/username").once()
+                .then((databaseEvent2) {
+                  usernames.add(databaseEvent2.snapshot.value.toString());
+                  setState(() { });
+                })
+                .catchError((error) { print("Failed to add user to list of users: " + error.toString()); });
+          });
+        })
+        .catchError((error) { print("failed to load users: " + error); });
   }
 
 
@@ -168,6 +190,32 @@ class _EditGroupSettingsPageState extends State<EditGroupSettingsPage> {
               ),
             ),
           ),
+          Container(
+            margin: EdgeInsets.only(left: 20, right: 20),
+            child: const Divider( color: Colors.black ),
+          ),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 20, right: 20),
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                itemCount: usernames.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    contentPadding: EdgeInsets.only(right: 10, left: 10),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text (
+                          "-   ${usernames[index]}"
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              ),
+            ),
+          )
         ],
       ),
     );
